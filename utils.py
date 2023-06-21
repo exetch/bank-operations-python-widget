@@ -1,29 +1,73 @@
 from datetime import datetime
 
+
 def mask_number(account):
+    """
+        Mask the account number or card number.
+
+        Args:
+            account (str): The account number or card number to be masked.
+
+        Returns:
+            str: The masked account number or card number.
+
+        Raises:
+            None
+
+        Examples:
+            >>> mask_number("Счет 1234567890")
+            'Счет **7890'
+            >>> mask_number("Visa Platinum 1234567812345678")
+            'Visa Platinum 1234 56** **** 5678'
+        """
     elements = account.split(' ')
     if 'Счет' in elements:
-        # Маскировка номера счета
         masked_number = 'Счет **' + elements[-1][-4:]
     else:
-        # Маскировка номера карты
         card_number = ''.join(elements[-1])
-        masked_number = ' '.join(elements[:-1]) + ' ' + card_number[:4] + ' ' + card_number[4:6] + '** **** ' + card_number[-4:]
+        masked_number = ' '.join(elements[:-1]) + ' ' + card_number[:4] + ' ' + card_number[
+                                                                                4:6] + '** **** ' + card_number[-4:]
 
     return masked_number
 
 
-
 def format_date(date_str):
+    """
+    Format the date string into the specified format.
+
+    Args:
+        date_str (str): The date string to be formatted. It should be in the format 'YYYY-MM-DDTHH:MM:SS.ssssss'.
+
+    Returns:
+        str: The formatted date string in the format 'DD.MM.YYYY'.
+
+    Raises:
+        ValueError: If the input date string is not in the expected format.
+
+    Examples:
+        >>> format_date('2019-08-26T10:50:58.294041')
+        '26.08.2019'
+    """
     date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%f')
     return date.strftime('%d.%m.%Y')
 
 
 def display_recent_operations(operations):
-    # Сортируем операции по дате в обратном порядке
+    """
+    Display the details of the five most recent executed operations.
+
+    This function sorts the operations by date in descending order and displays the details of the executed operations
+    with the 'EXECUTED' state. It prints the operation date, description, masked from_account, masked to_account, amount,
+    and currency.
+
+        Args:
+            operations (list): A list of operation dictionaries.
+
+        Returns:
+            None
+        """
     sorted_operations = sorted(operations, key=lambda x: x.get('date', ''), reverse=True)
 
-    # Выводим 5 последних выполненных операций
     count = 0
     for operation in sorted_operations:
         if operation['state'] == 'EXECUTED':
@@ -34,11 +78,9 @@ def display_recent_operations(operations):
             amount = operation['operationAmount']['amount']
             currency = operation['operationAmount']['currency']['name']
 
-            # Замаскировать номера карты и счета
             from_account = mask_number(from_account) if from_account else ''
             to_account = mask_number(to_account)
 
-            # Выводим информацию об операции
             print(f'{date} {description}')
             print(f'{from_account} -> {to_account}')
             print(f'{amount} {currency}\n')
@@ -47,4 +89,3 @@ def display_recent_operations(operations):
 
         if count >= 5:
             break
-
