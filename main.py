@@ -1,9 +1,7 @@
-import json
-from utils import display_recent_operations
+from utils import display_recent_operations, load_data_from_file
 
 DATAFILE = 'operations.json'
 
-with open(DATAFILE, 'r', encoding='utf-8') as file:
-    operations = json.load(file)
 if __name__ == '__main__':
+    operations = load_data_from_file(DATAFILE)
     display_recent_operations(operations)
