@@ -10,25 +10,16 @@ def mask_number(account):
 
         Returns:
             str: The masked account number or card number.
-
-        Raises:
-            None
-
-        Examples:
-            >>> mask_number("Счет 1234567890")
-            'Счет **7890'
-            >>> mask_number("Visa Platinum 1234567812345678")
-            'Visa Platinum 1234 56** **** 5678'
-        """
+    """
     elements = account.split(' ')
     if 'Счет' in elements:
-        masked_number = 'Счет **' + elements[-1][-4:]
+        masked_number = elements[-1][-4:]
+        return f'Счет ** {masked_number}'
     else:
         card_number = ''.join(elements[-1])
-        masked_number = ' '.join(elements[:-1]) + ' ' + card_number[:4] + ' ' + card_number[
-                                                                                4:6] + '** **** ' + card_number[-4:]
-
-    return masked_number
+        card_name = ' '.join(elements[:-1])
+        masked_number = card_number[:4] + ' ' + card_number[4:6] + '** **** ' + card_number[-4:]
+        return f'{card_name} {masked_number}'
 
 
 def format_date(date_str):
@@ -40,9 +31,6 @@ def format_date(date_str):
 
     Returns:
         str: The formatted date string in the format 'DD.MM.YYYY'.
-
-    Raises:
-        ValueError: If the input date string is not in the expected format.
 
     Examples:
         >>> format_date('2019-08-26T10:50:58.294041')
