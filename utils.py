@@ -75,5 +75,5 @@ def display_recent_operations(operations):
 
             count += 1
 
-        if count >= 5:
+        if count == 5:
             break
