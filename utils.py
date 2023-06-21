@@ -1,4 +1,11 @@
 from datetime import datetime
+import json
+
+
+def load_data_from_file(filename):
+    with open(filename, 'r', encoding='utf-8') as file:
+        operations = json.load(file)
+    return operations
 
 
 def mask_number(account):
@@ -11,10 +18,10 @@ def mask_number(account):
         Returns:
             str: The masked account number or card number.
     """
-    elements = account.split(' ')
+    elements = account.split()
     if 'Счет' in elements:
         masked_number = elements[-1][-4:]
-        return f'Счет ** {masked_number}'
+        return f'Счет **{masked_number}'
     else:
         card_number = ''.join(elements[-1])
         card_name = ' '.join(elements[:-1])
@@ -36,6 +43,8 @@ def format_date(date_str):
         >>> format_date('2019-08-26T10:50:58.294041')
         '26.08.2019'
     """
+    if not date_str:
+        return None
     date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%f')
     return date.strftime('%d.%m.%Y')
 
